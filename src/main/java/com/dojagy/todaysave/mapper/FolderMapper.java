@@ -16,6 +16,6 @@ public interface FolderMapper {
     @Mapping(target = "children", ignore = true)
     Folder toEntity(FolderCreateRequestDto folder);
 
-    @Mapping(source = "parent_id", target = "parentId")
+    @Mapping(source = "parent.id", target = "parentId")
     FolderResponseDto toResponseDto(Folder folder);
 }
