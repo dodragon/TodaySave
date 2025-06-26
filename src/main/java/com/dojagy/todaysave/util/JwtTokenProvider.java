@@ -1,6 +1,7 @@
 package com.dojagy.todaysave.util;
 
 import com.dojagy.todaysave.dto.TokenInfo;
+import com.dojagy.todaysave.dto.user.UserPrincipal;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,15 +28,23 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final Key key;
+    private final long accessTokenValidityInMilliseconds;
+    private final long refreshTokenValidityInMilliseconds;
 
-    // application.properties 에서 secret 값 가져와서 key에 저장
-    public JwtTokenProvider(@Value("${dojagy.today.save.app.jwt.secret}") String secretKey) {
+    public JwtTokenProvider(@Value("${dojagy.today.save.app.jwt.secret}") String secretKey,
+                            @Value("${dojagy.today.save.app.jwt.access-token-milliseconds}") long accessTokenValidity,
+                            @Value("${dojagy.today.save.app.jwt.refresh-token-milliseconds}") long refreshTokenValidity) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.accessTokenValidityInMilliseconds = accessTokenValidity;
+        this.refreshTokenValidityInMilliseconds = refreshTokenValidity;
     }
 
-    // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
+    // 유저 정보를 가지고 AccessToken, RefreshToken 을 생성하는 메서드
     public TokenInfo generateToken(Authentication authentication) {
+        // 1. Principal에서 UserPrincipal 객체 추출
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -43,18 +52,20 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
 
-        // Access Token 생성 (30분)
-        Date accessTokenExpiresIn = new Date(now + 86400000); // 예시: 24시간. 실제로는 30분~1시간이 적절
+        // Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + accessTokenValidityInMilliseconds);
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                // .setSubject(authentication.getName()) // 더 이상 사용하지 않음
+                .claim("id", userPrincipal.id())       // 커스텀 클레임으로 id 추가
+                .claim("email", userPrincipal.email()) // 커스텀 클레임으로 email 추가
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        // Refresh Token 생성 (7일)
+        // Refresh Token 생성 (Refresh Token에는 보통 만료 시간 외에 다른 정보를 담지 않음)
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 604800000)) // 7일
+                .setExpiration(new Date(now + refreshTokenValidityInMilliseconds))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -80,8 +91,15 @@ public class JwtTokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        // --- 수정된 부분 ---
+        // 1. 클레임에서 id와 email 정보 추출
+        Long id = claims.get("id", Long.class);
+        String email = claims.get("email", String.class);
+
+        // 2. 추출한 정보로 UserPrincipal 객체 생성
+        UserPrincipal principal = new UserPrincipal(id, email);
+
+        // 3. UserPrincipal 객체를 담아 Authentication 객체 생성
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
