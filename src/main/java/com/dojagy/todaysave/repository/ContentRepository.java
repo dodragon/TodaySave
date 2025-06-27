@@ -15,10 +15,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @Query("SELECT c FROM Content c JOIN FETCH c.link JOIN FETCH c.user WHERE c.folder = :folder")
     Page<Content> findByFolderWithDetails(Folder folder, Pageable pageable);
 
-    // 기본 쿼리 메소드 (N+1 문제 발생 가능성 있음)
+    // 기본 쿼리 메소드
     Page<Content> findByFolderAndUser(Folder folder, User user, Pageable pageable);
-
-    // 특정 폴더에 속한 콘텐츠를 삭제하기 위한 메소드 (폴더 삭제 시 사용 가능)
-    void deleteByFolder(Folder folder);
-
 }

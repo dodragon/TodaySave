@@ -9,6 +9,8 @@ import com.dojagy.todaysave.mapper.ContentMapper;
 import com.dojagy.todaysave.repository.*;
 import com.dojagy.todaysave.util.UrlMetadataExtractor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,5 +82,16 @@ public class ContentService {
         }
 
         return Result.SUCCESS("URL 메타데이터 조회 완료했습니다.", dto);
+    }
+
+    @Transactional
+    public Result<Page<ContentResponseDto>> contents(Long folderId, Pageable pageable) {
+        Folder folder = folderRepository.findById(folderId).orElse(null);
+        if (folder == null) {
+            return Result.FAILURE("폴더를 찾을 수 없습니다.");
+        }
+
+        return Result.SUCCESS("폴더 컨텐츠 목록 조회 성공했습니다.", contentRepository.findByFolderWithDetails(folder, pageable)
+                .map(contentMapper::toResponseDto));
     }
 }
