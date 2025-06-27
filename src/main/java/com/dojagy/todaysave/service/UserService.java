@@ -47,7 +47,7 @@ public class UserService {
     }
 
     @Transactional
-    public Result<Object> nicknameCheck(String nickname) {
+    public Result<Void> nicknameCheck(String nickname) {
         if(userRepository.findByNickname(nickname).isPresent()) {
             return Result.FAILURE("중복된 닉네임 입니다.");
         }
@@ -72,7 +72,6 @@ public class UserService {
         //    Authorities: 권한 목록
         Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
 
-        System.out.println("::::::::::::::::Service::::::::::::::::::");
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
         UserResponseDto userResponseDto = userMapper.toResponseDto(user);
 

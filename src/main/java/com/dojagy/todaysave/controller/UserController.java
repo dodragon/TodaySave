@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/check-nickname")
-    public Result<Object> checkNickname(@RequestParam String nickname) {
+    public Result<Void> checkNickname(@RequestParam String nickname) {
         return userService.nicknameCheck(nickname);
     }
 

@@ -37,6 +37,8 @@ public class Folder {
     private User user;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Folder> children = new ArrayList<>();
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Content> contents = new ArrayList<>();
 
     public void setParent(Folder parent) {
         this.parent = parent;
