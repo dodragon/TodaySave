@@ -9,6 +9,10 @@ import com.dojagy.todaysave.mapper.FolderMapper;
 import com.dojagy.todaysave.repository.FolderRepository;
 import com.dojagy.todaysave.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,25 +56,23 @@ public class FolderService {
     }
 
     @Transactional
-    public Result<List<FolderResponseDto>> rootFolders(Long userId) {
+    public Result<Page<FolderResponseDto>> rootFolders(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElse(null);
         if(user == null) {
             return Result.FAILURE("사용자를 찾을 수 없습니다.");
         }
 
-        List<Folder> rootFolders = folderRepository.findByUserIdAndParentIsNull(userId);
+        Page<Folder> rootFolders = folderRepository.findByUserIdAndParentIsNull(userId, pageable);
 
-        return Result.SUCCESS("폴더 리스트 조회에 성공했습니다.", rootFolders.stream()
-                .map(folderMapper::toResponseDto)
-                .collect(Collectors.toList()));
+        return Result.SUCCESS("폴더 리스트 조회에 성공했습니다.", rootFolders.map(folderMapper::toResponseDto));
     }
 
     @Transactional
-    public Result<List<FolderResponseDto>> childFolders(Long userId, Long folderId) {
-        return checkUserAndFolder(userId, folderId, (user, folder) ->
-                Result.SUCCESS("하위 폴더 조회에 성공하였습니다.", folder.getChildren().stream()
-                .map(folderMapper::toResponseDto)
-                .collect(Collectors.toList())));
+    public Result<Page<FolderResponseDto>> childFolders(Long userId, Long folderId, Pageable pageable) {
+        return checkUserAndFolder(userId, folderId, (user, folder) -> {
+            Page<Folder> pageFolder = folderRepository.findByUserIdAndParent(userId, folder, pageable);
+            return Result.SUCCESS("하위 폴더 조회에 성공하였습니다.", pageFolder.map(folderMapper::toResponseDto));
+        });
     }
 
     @Transactional
@@ -78,6 +80,21 @@ public class FolderService {
         return checkUserAndFolder(userId, folderId, (user, folder) -> {
             folderRepository.delete(folder);
             return Result.SUCCESS(folder.getFolderName() + "폴더를 삭제 완료했습니다.");
+        });
+    }
+
+    @Transactional
+    public Result<FolderResponseDto> updateFolder(Long userId, Long folderId, FolderCreateRequestDto requestDto) {
+        return checkUserAndFolder(userId, folderId, (user, folder) -> {
+            folder.setFolderName(requestDto.getFolderName());
+            folder.setColor(requestDto.getColor());
+
+            if(requestDto.getParentId() != null) {
+                Folder parent = folderRepository.findById(requestDto.getParentId()).orElse(null);
+                folder.setParent(parent);
+            }
+
+            return Result.SUCCESS("폴더를 수정했습니다.", folderMapper.toResponseDto(folder));
         });
     }
 

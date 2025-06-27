@@ -1,0 +1,24 @@
+package com.dojagy.todaysave.repository;
+
+import com.dojagy.todaysave.entity.Content;
+import com.dojagy.todaysave.entity.Folder;
+import com.dojagy.todaysave.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+public interface ContentRepository extends JpaRepository<Content, Long> {
+
+    // N+1 문제를 해결하기 위한 Fetch Join 쿼리
+    // Content를 조회할 때 연관된 Link와 User도 함께 한방 쿼리로 가져옵니다.
+    @Query("SELECT c FROM Content c JOIN FETCH c.link JOIN FETCH c.user WHERE c.folder = :folder")
+    Page<Content> findByFolderWithDetails(Folder folder, Pageable pageable);
+
+    // 기본 쿼리 메소드 (N+1 문제 발생 가능성 있음)
+    Page<Content> findByFolderAndUser(Folder folder, User user, Pageable pageable);
+
+    // 특정 폴더에 속한 콘텐츠를 삭제하기 위한 메소드 (폴더 삭제 시 사용 가능)
+    void deleteByFolder(Folder folder);
+
+}

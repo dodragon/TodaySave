@@ -3,7 +3,9 @@ package com.dojagy.todaysave.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,10 @@ public class Folder {
     private List<Folder> children = new ArrayList<>();
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Content> contents = new ArrayList<>();
+    @CreatedDate
+    @Column(name= "create_dt", updatable = false)
+    @Comment("생성 날짜 및 시간")
+    private LocalDateTime createDt;
 
     public void setParent(Folder parent) {
         this.parent = parent;

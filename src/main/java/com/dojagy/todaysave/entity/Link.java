@@ -32,6 +32,9 @@ public class Link {
     @Column(name ="thumnail_url", length = 2048)
     @Comment("링크 썸네일 URL")
     private String thumbnailUrl;
+    @Column(name ="favicon_url", length = 2048)
+    @Comment("파비콘 URL")
+    private String faviconUrl;
     @CreatedDate
     @Column(name= "create_dt", updatable = false)
     @Comment("생성 날짜 및 시간")

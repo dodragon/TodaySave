@@ -22,6 +22,11 @@ public class UserController {
         return userService.signUp(requestDto);
     }
 
+    @GetMapping("/my-info")
+    public Result<UserResponseDto> myUserInfo(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        return userService.userInfo(userPrincipal.id());
+    }
+
     @GetMapping("/check-nickname")
     public Result<Void> checkNickname(@RequestParam String nickname) {
         return userService.nicknameCheck(nickname);
@@ -32,18 +37,13 @@ public class UserController {
         return userService.login(false, requestDto);
     }
 
-    @GetMapping("/test-token")
-    public Result<TokenInfo> testToken() {
-        return userService.testToken();
-    }
-
     @GetMapping("/token-reissue")
     public Result<TokenInfo> reissueToken(@RequestBody TokenReissueRequestDto requestDto) {
         return userService.tokenReissue(requestDto);
     }
 
-    @GetMapping("/my-info")
-    public Result<UserResponseDto> myUserInfo(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        return userService.userInfo(userPrincipal.id());
+    @GetMapping("/test-token")
+    public Result<TokenInfo> testToken() {
+        return userService.testToken();
     }
 }

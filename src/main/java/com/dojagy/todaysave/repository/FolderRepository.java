@@ -2,12 +2,14 @@ package com.dojagy.todaysave.repository;
 
 import com.dojagy.todaysave.entity.Folder;
 import com.dojagy.todaysave.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface FolderRepository extends JpaRepository<Folder, Long> {
-    List<Folder> findByUserIdAndParentIsNull(Long userId);
+    Page<Folder> findByUserIdAndParentIsNull(Long userId, Pageable pageable);
+    Page<Folder> findByUserIdAndParent(Long userId, Folder parent, Pageable pageable);
     Optional<Folder> findByIdAndUser(Long id, User user);
 }

@@ -1,0 +1,84 @@
+package com.dojagy.todaysave.service;
+
+import com.dojagy.todaysave.dto.Result;
+import com.dojagy.todaysave.dto.content.ContentCreateRequestDto;
+import com.dojagy.todaysave.dto.content.ContentResponseDto;
+import com.dojagy.todaysave.dto.content.UrlMetadataDto;
+import com.dojagy.todaysave.entity.*;
+import com.dojagy.todaysave.mapper.ContentMapper;
+import com.dojagy.todaysave.repository.*;
+import com.dojagy.todaysave.util.UrlMetadataExtractor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class ContentService {
+
+    private final ContentRepository contentRepository;
+    private final FolderRepository folderRepository;
+    private final LinkRepository linkRepository;
+    private final TagRepository tagRepository;
+    private final ContentMapper contentMapper;
+    private final UrlMetadataExtractor extractor;
+    private final UserRepository userRepository;
+
+    @Transactional
+    public Result<ContentResponseDto> createContent(Long userId, ContentCreateRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return Result.FAILURE("사용자를 찾을 수 없습니다.");
+        }
+
+        Folder folder = folderRepository.findById(requestDto.getFolderId()).orElse(null);
+        if (folder == null) {
+            return Result.FAILURE("폴더를 찾을 수 없습니다.");
+        }
+
+        Link link = linkRepository.findByCanonicalLink(requestDto.getCanonicalUrl()).orElseGet(() ->
+                Link.builder()
+                        .canonicalLink(requestDto.getCanonicalUrl())
+                        .title(requestDto.getTitle())
+                        .description(requestDto.getDescription())
+                        .thumbnailUrl(requestDto.getThumbnailUrl())
+                        .build()
+        );
+
+        Content newContent = Content.builder()
+                .sharedLink(requestDto.getSharedUrl())
+                .memo(requestDto.getMemo())
+                .user(user)
+                .folder(folder)
+                .link(link)
+                .build();
+
+        if (requestDto.getTags() != null) {
+            for (String tagName : requestDto.getTags()) {
+                Tag tag = tagRepository.findByName(tagName).orElseGet(() ->
+                        tagRepository.save(
+                                Tag.builder()
+                                        .name(tagName)
+                                        .build()
+                        )
+                );
+                newContent.addTag(tag);
+            }
+        }
+
+        Content savedContent = contentRepository.save(newContent);
+
+        return Result.SUCCESS("컨텐츠 저장을 성공했습니다.", contentMapper.toResponseDto(savedContent));
+    }
+
+    @Transactional
+    public Result<UrlMetadataDto> urlMetadata(String url) {
+        UrlMetadataDto dto = extractor.extract(url).orElse(null);
+
+        if (dto == null) {
+            return Result.FAILURE("저장 할 수 없는 링크 입니다. 다른 링크를 저장해 주세요.");
+        }
+
+        return Result.SUCCESS("URL 메타데이터 조회 완료했습니다.", dto);
+    }
+}
