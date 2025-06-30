@@ -14,5 +14,6 @@ public class UserResponseDto {
     private String nickname;
     private LocalDate birthday;
     private String gender;
+    private String grade;
     private LocalDateTime createDt;
 }

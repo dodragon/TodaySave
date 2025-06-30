@@ -1,6 +1,5 @@
 package com.dojagy.todaysave.dto.user;
 
-import com.dojagy.todaysave.entity.value.Gender;
 import com.dojagy.todaysave.entity.value.Sns;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,8 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -29,7 +26,4 @@ public class UserSignUpRequestDto {
     @NotBlank(message = "닉네임은 필수입니다.")
     @Size(min = 2, max = 8, message = "닉네임은 2자 이상 8자 이하로 입력해주세요.")
     private String nickname;
-
-    private LocalDate birthday;
-    private Gender gender;
 }

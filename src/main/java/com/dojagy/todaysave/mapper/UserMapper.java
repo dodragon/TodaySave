@@ -18,6 +18,7 @@ public interface UserMapper {
     User toEntity(UserSignUpRequestDto dto);
 
     @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "grade", target = "grade")
     UserResponseDto toResponseDto(User user);
 
 }
