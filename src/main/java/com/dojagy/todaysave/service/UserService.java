@@ -101,12 +101,6 @@ public class UserService {
     }
 
     @Transactional
-    public Result<TokenInfo> testToken() {
-        Authentication authentication = new UsernamePasswordAuthenticationToken("test", "test", null);
-        return Result.SUCCESS("테스트 토큰 발급 완료", jwtTokenProvider.generateToken(authentication));
-    }
-
-    @Transactional
     public Result<TokenInfo> tokenReissue(TokenReissueRequestDto requestDto) {
         if (!jwtTokenProvider.validateToken(requestDto.getRefreshToken())) {
             Result.FAILURE("유효하지 않은 Refresh Token 입니다.");
@@ -117,4 +111,12 @@ public class UserService {
 
         return Result.SUCCESS("토큰 재발급에 성공하였습니다.", tokenInfo);
     }
+
+    @Transactional
+    public Result<TokenInfo> testToken() {
+        Authentication authentication = new UsernamePasswordAuthenticationToken("test", "test", null);
+        return Result.SUCCESS("테스트 토큰 발급 완료", jwtTokenProvider.generateToken(authentication));
+    }
+
+    //TODO: 성별이랑 생년월일 받아서 회원정보를 수정하고 수정된 회원정보를 return 해주기
 }

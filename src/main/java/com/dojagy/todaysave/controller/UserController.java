@@ -37,7 +37,7 @@ public class UserController {
         return userService.login(false, requestDto);
     }
 
-    @GetMapping("/token-reissue")
+    @PostMapping("/token-reissue")
     public Result<TokenInfo> reissueToken(@RequestBody TokenReissueRequestDto requestDto) {
         return userService.tokenReissue(requestDto);
     }
