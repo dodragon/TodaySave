@@ -52,6 +52,7 @@ public class Content {
     private Link link;
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     @Comment("태그들")
+    @Builder.Default
     private List<ContentTag> contentTags = new ArrayList<>();
     @CreatedDate
     @Column(name= "create_dt", updatable = false)

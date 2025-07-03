@@ -38,8 +38,10 @@ public class Folder {
     @Comment("소유 회원 고유 식별 ID")
     private User user;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Folder> children = new ArrayList<>();
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Content> contents = new ArrayList<>();
     @CreatedDate
     @Column(name= "create_dt", updatable = false)
