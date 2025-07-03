@@ -46,4 +46,10 @@ public class UserController {
     public Result<TokenInfo> testToken() {
         return userService.testToken();
     }
+
+    @PatchMapping("/info-update")
+    public Result<UserResponseDto> updateUserInfo(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                  @RequestBody UserUpdateDto updateDto) {
+        return userService.updateUserProfile(userPrincipal.id(), updateDto);
+    }
 }

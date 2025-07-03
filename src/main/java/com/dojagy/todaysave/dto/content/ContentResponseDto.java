@@ -1,5 +1,6 @@
 package com.dojagy.todaysave.dto.content;
 
+import com.dojagy.todaysave.dto.category.CategoryResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,5 @@ public class ContentResponseDto {
     private LocalDateTime createDt;
     private LinkResponseDto link;
     private List<TagResponseDto> tags;
+    private CategoryResponseDto category;
 }

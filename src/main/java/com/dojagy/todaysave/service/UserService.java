@@ -118,5 +118,27 @@ public class UserService {
         return Result.SUCCESS("테스트 토큰 발급 완료", jwtTokenProvider.generateToken(authentication));
     }
 
-    //TODO: 성별이랑 생년월일 받아서 회원정보를 수정하고 수정된 회원정보를 return 해주기
+    @Transactional // 이 어노테이션을 붙여야 메소드 종료 시 변경 감지(Dirty Checking)가 동작합니다.
+    public Result<UserResponseDto> updateUserProfile(Long userId, UserUpdateDto updateDto) {
+        // 1. DB에서 사용자 정보를 조회합니다.
+        //    orElseThrow를 사용하여 사용자가 없으면 예외를 발생시킵니다.
+        User user = userRepository.findById(userId).orElse(null);
+
+        if(user == null) {
+            return Result.FAILURE("사용자를 찾을 수 없습니다.");
+        }
+
+        // 2. DTO로부터 받은 값으로 엔티티의 상태를 변경합니다.
+        //    JPA의 '변경 감지(Dirty Checking)' 기능 덕분에,
+        //    조회한 엔티티의 setter 메소드를 호출하여 값을 바꾸기만 하면
+        //    트랜잭션이 커밋될 때 UPDATE 쿼리가 자동으로 실행됩니다.
+        user.setBirthday(updateDto.getBirthday());
+        user.setGender(updateDto.getGender());
+
+        // 3. userRepository.save(user)를 명시적으로 호출할 필요가 없습니다.
+        //    하지만 명시적으로 호출해도 문제는 없습니다.
+
+        // 4. 변경된 엔티티를 DTO로 변환하여 반환합니다.
+        return Result.SUCCESS("사용자 정보를 수정했습니다.", userMapper.toResponseDto(user));
+    }
 }

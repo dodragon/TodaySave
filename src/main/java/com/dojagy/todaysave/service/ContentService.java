@@ -20,6 +20,7 @@ public class ContentService {
 
     private final ContentRepository contentRepository;
     private final FolderRepository folderRepository;
+    private final CategoryRepository categoryRepository;
     private final LinkRepository linkRepository;
     private final TagRepository tagRepository;
     private final ContentMapper contentMapper;
@@ -38,6 +39,8 @@ public class ContentService {
             return Result.FAILURE("폴더를 찾을 수 없습니다.");
         }
 
+        Category category = categoryRepository.findById(requestDto.getCategoryId()).orElse(null);
+
         Link link = linkRepository.findByCanonicalLink(requestDto.getCanonicalUrl()).orElseGet(() ->
                 Link.builder()
                         .canonicalLink(requestDto.getCanonicalUrl())
@@ -52,6 +55,7 @@ public class ContentService {
                 .memo(requestDto.getMemo())
                 .user(user)
                 .folder(folder)
+                .category(category)
                 .link(link)
                 .build();
 

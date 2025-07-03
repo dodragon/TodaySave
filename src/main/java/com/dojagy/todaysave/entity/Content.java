@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 // ToString에서 contentTags를 제외하여 순환 참조를 방지합니다.
-@ToString(exclude = {"user", "folder", "link", "contentTags"})
+@ToString(exclude = {"user", "folder", "link", "contentTags", "category"})
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "content", uniqueConstraints = {
@@ -42,6 +42,10 @@ public class Content {
     @JoinColumn(name = "folder_id", nullable = false)
     @Comment("소속 폴더")
     private Folder folder;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @Comment("소속 카테고리 (선택사항)")
+    private Category category;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "link_id", nullable = false)
     @Comment("링크 고유 정보")
