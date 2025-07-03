@@ -1,5 +1,6 @@
 package com.dojagy.todaysave.dto.content;
 
+import com.dojagy.todaysave.entity.value.LinkType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,4 +17,5 @@ public class UrlMetadataDto {
     private String thumbnailUrl;
     private String faviconUrl;
     private String canonicalUrl;
+    private LinkType linkType;
 }

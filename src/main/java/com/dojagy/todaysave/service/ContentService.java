@@ -43,7 +43,7 @@ public class ContentService {
 
         Link link = linkRepository.findByCanonicalLink(requestDto.getCanonicalUrl()).orElseGet(() ->
                 Link.builder()
-                        .canonicalLink(requestDto.getCanonicalUrl())
+                        .url(requestDto.getCanonicalUrl())
                         .title(requestDto.getTitle())
                         .description(requestDto.getDescription())
                         .thumbnailUrl(requestDto.getThumbnailUrl())

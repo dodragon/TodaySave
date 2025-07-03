@@ -1,6 +1,7 @@
 package com.dojagy.todaysave.util;
 
 import com.dojagy.todaysave.dto.content.UrlMetadataDto;
+import com.dojagy.todaysave.entity.value.LinkType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ public class UrlMetadataExtractor {
                             .thumbnailUrl(extractThumbnailUrl(doc))
                             .faviconUrl(extractFaviconUrl(doc, url))
                             .canonicalUrl(extractCanonicalUrl(doc, url))
+                            .linkType(extractLinkType(url))
                             .build()
             );
         } catch (IOException | URISyntaxException e) {
@@ -66,6 +68,45 @@ public class UrlMetadataExtractor {
         }
 
         return new URI(baseUrl).resolve(faviconUrl).toString();
+    }
+
+    private LinkType extractLinkType(String url) {
+        try {
+            String host = new URI(url).getHost().toLowerCase();
+
+            if (host.contains("youtube.com") || host.contains("youtu.be")) {
+                return LinkType.YOUTUBE;
+            } else if (host.contains("instagram.com")) {
+                return LinkType.INSTAGRAM;
+            } else if (host.contains("blog.naver.com")) {
+                return LinkType.NAVER_BLOG;
+            } else if (host.contains("velog.io")) {
+                return LinkType.VELOG;
+            } else if (host.contains("github.com")) {
+                return LinkType.GITHUB;
+            } else if (host.contains("surfit.io")) { // 서핏
+                return LinkType.SURFIT;
+            } else if (host.contains("tistory.com")) { // 티스토리
+                return LinkType.TISTORY;
+            } else if (host.contains("threads.net")) { // 쓰레드
+                return LinkType.THREADS;
+            } else if (host.contains("brunch.co.kr")) { // 브런치스토리
+                return LinkType.BRUNCH;
+            } else if (host.contains("notion.so") || host.contains("notion.site")) { // 노션
+                return LinkType.NOTION;
+            } else if (host.contains("medium.com")) { // 미디엄
+                return LinkType.MEDIUM;
+            } else if (host.contains("linkedin.com")) { // 링크드인
+                return LinkType.LINKEDIN;
+            } else if (host.contains("x.com") || host.contains("twitter.com")) { // X (트위터)
+                return LinkType.X_TWITTER;
+            } else {
+                return LinkType.GENERAL;
+            }
+        } catch (URISyntaxException | NullPointerException e) {
+            // URL 형식이 잘못되었거나 host가 null인 경우(예: mailto: 링크) 일반 링크로 처리
+            return LinkType.GENERAL;
+        }
     }
 
     private String extractMetaTag(Document doc, String attribute) {
