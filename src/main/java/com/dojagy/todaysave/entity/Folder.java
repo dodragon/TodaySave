@@ -3,6 +3,7 @@ package com.dojagy.todaysave.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -43,6 +44,8 @@ public class Folder {
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Content> contents = new ArrayList<>();
+    @Formula("(SELECT MAX(c.create_dt) FROM content c WHERE c.folder_id = folder_id)")
+    private LocalDateTime lastContentDate;
     @CreatedDate
     @Column(name= "create_dt", updatable = false)
     @Comment("생성 날짜 및 시간")
