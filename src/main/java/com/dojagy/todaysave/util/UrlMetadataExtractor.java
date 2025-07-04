@@ -1,7 +1,7 @@
 package com.dojagy.todaysave.util;
 
-import com.dojagy.todaysave.dto.content.UrlMetadataDto;
-import com.dojagy.todaysave.entity.value.LinkType;
+import com.dojagy.todaysave.data.dto.content.UrlMetadataDto;
+import com.dojagy.todaysave.data.entity.value.LinkType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;

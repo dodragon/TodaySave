@@ -1,8 +1,6 @@
 package com.dojagy.todaysave.util;
 
-import com.dojagy.todaysave.dto.Result;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.dojagy.todaysave.data.dto.Result;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

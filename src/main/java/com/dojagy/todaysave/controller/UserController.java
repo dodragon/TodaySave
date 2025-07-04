@@ -1,13 +1,12 @@
 package com.dojagy.todaysave.controller;
 
-import com.dojagy.todaysave.dto.Result;
-import com.dojagy.todaysave.dto.TokenInfo;
-import com.dojagy.todaysave.dto.user.*;
-import com.dojagy.todaysave.service.UserService;
+import com.dojagy.todaysave.data.dto.Result;
+import com.dojagy.todaysave.data.dto.TokenInfo;
+import com.dojagy.todaysave.data.dto.user.*;
+import com.dojagy.todaysave.data.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

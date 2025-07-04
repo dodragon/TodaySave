@@ -1,10 +1,10 @@
 package com.dojagy.todaysave.controller;
 
-import com.dojagy.todaysave.dto.Result;
-import com.dojagy.todaysave.dto.category.CategoryCreateDto;
-import com.dojagy.todaysave.dto.category.CategoryResponseDto;
-import com.dojagy.todaysave.dto.user.UserPrincipal;
-import com.dojagy.todaysave.service.CategoryService;
+import com.dojagy.todaysave.data.dto.Result;
+import com.dojagy.todaysave.data.dto.category.CategoryCreateDto;
+import com.dojagy.todaysave.data.dto.category.CategoryResponseDto;
+import com.dojagy.todaysave.data.dto.user.UserPrincipal;
+import com.dojagy.todaysave.data.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
