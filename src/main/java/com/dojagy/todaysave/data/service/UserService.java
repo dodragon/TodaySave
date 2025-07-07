@@ -3,7 +3,6 @@ package com.dojagy.todaysave.data.service;
 import com.dojagy.todaysave.data.dto.Result;
 import com.dojagy.todaysave.data.dto.TokenInfo;
 import com.dojagy.todaysave.data.dto.user.*;
-import com.dojagy.todaysave.dto.user.*;
 import com.dojagy.todaysave.data.entity.User;
 import com.dojagy.todaysave.data.mapper.UserMapper;
 import com.dojagy.todaysave.data.repository.UserRepository;
