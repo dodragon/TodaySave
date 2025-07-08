@@ -26,7 +26,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/user/join", "/api/user/login", "/api/user/test-token", "/api/user/token-reissue", "/api/user/check-nickname").permitAll()
+                        .requestMatchers(
+                                "/api/user/join",                           //회원가입
+                                "/api/user/login",                          //로그인
+                                "/api/user/test-token",                     //테스트용 토큰 발급
+                                "/api/user/token-reissue",                  //토큰 재발급
+                                "/api/user/check-nickname",                 //닉네임 중복 체크
+                                "/api/random-nickname"                      //랜덤 닉네임 생성
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);

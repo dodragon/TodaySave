@@ -3,6 +3,7 @@ package com.dojagy.todaysave.controller;
 import com.dojagy.todaysave.data.dto.Result;
 import com.dojagy.todaysave.data.dto.TokenInfo;
 import com.dojagy.todaysave.data.dto.user.*;
+import com.dojagy.todaysave.data.service.NicknameGeneratorService;
 import com.dojagy.todaysave.data.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final NicknameGeneratorService nicknameGeneratorService;
 
     @PostMapping("/join")
     public Result<LoginResponseDto> signUp(@Valid @RequestBody UserSignUpRequestDto requestDto) {
@@ -29,6 +31,11 @@ public class UserController {
     @GetMapping("/check-nickname")
     public Result<Void> checkNickname(@RequestParam String nickname) {
         return userService.nicknameCheck(nickname);
+    }
+
+    @GetMapping("/random-nickname")
+    public Result<String> randomNickname() {
+        return nicknameGeneratorService.generateUniqueNickname();
     }
 
     @PostMapping("/login")
