@@ -32,7 +32,7 @@ public class SecurityConfig {
                                 "/api/user/test-token",                     //테스트용 토큰 발급
                                 "/api/user/token-reissue",                  //토큰 재발급
                                 "/api/user/check-nickname",                 //닉네임 중복 체크
-                                "/api/random-nickname"                      //랜덤 닉네임 생성
+                                "/api/user/random-nickname"                 //랜덤 닉네임 생성
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

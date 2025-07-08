@@ -23,7 +23,7 @@ public class UserSignUpRequestDto {
     @NotBlank(message = "이메일은 필수입니다.")
     private String email;
 
-    @NotBlank(message = "닉네임은 2자 이상 8자 이하로 입력해주세요.")
-    @Size(min = 2, max = 8, message = "닉네임은 2자 이상 8자 이하로 입력해주세요.")
+    @NotBlank(message = "닉네임은 2자 이상 12자 이하로 입력해주세요.")
+    @Size(min = 2, max = 12, message = "닉네임은 2자 이상 12자 이하로 입력해주세요.")
     private String nickname;
 }
