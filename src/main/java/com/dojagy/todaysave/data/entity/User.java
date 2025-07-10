@@ -12,6 +12,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -53,7 +55,15 @@ public class User {
     @Comment("회원 등급 (일반, 프리미엄)")
     private UserGrade grade;
     @CreatedDate
-    @Column(name= "create_dt", updatable = false)
+    @Column(name = "create_dt", updatable = false)
     @Comment("가입 날짜 및 시간")
     private LocalDateTime createDt;
+    @OneToMany(mappedBy = "owner")
+    @Builder.Default
+    @Comment("내가 소유한 폴더 목록")
+    private List<Folder> ownedFolders = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    @Comment("나에게 공유된 폴더 관계 목록")
+    private List<FolderShare> folderShares = new ArrayList<>();
 }

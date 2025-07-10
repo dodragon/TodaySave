@@ -39,7 +39,7 @@ public class FolderService {
                 return Result.FAILURE("상위 폴더를 찾을 수 없습니다.");
             }
 
-            if(!parent.getUser().getId().equals(userId)) {
+            if(!parent.getOwner().getId().equals(userId)) {
                 return Result.FAILURE("상위 폴더에 대한 접근 권한이 없습니다.");
             }
 
@@ -58,7 +58,7 @@ public class FolderService {
             return Result.FAILURE("사용자를 찾을 수 없습니다.");
         }
 
-        Page<Folder> rootFolders = folderRepository.findByUserIdAndParentIsNull(userId, pageable);
+        Page<Folder> rootFolders = folderRepository.findByOwnerIdAndParentIsNull(userId, pageable);
 
         return Result.SUCCESS("폴더 리스트 조회에 성공했습니다.", rootFolders.map(folderMapper::toResponseDto));
     }
@@ -66,7 +66,7 @@ public class FolderService {
     @Transactional
     public Result<Page<FolderResponseDto>> childFolders(Long userId, Long folderId, Pageable pageable) {
         return checkUserAndFolder(userId, folderId, (user, folder) -> {
-            Page<Folder> pageFolder = folderRepository.findByUserIdAndParent(userId, folder, pageable);
+            Page<Folder> pageFolder = folderRepository.findByOwnerIdAndParent(userId, folder, pageable);
             return Result.SUCCESS("하위 폴더 조회에 성공하였습니다.", pageFolder.map(folderMapper::toResponseDto));
         });
     }
@@ -100,7 +100,7 @@ public class FolderService {
             return Result.FAILURE("사용자를 찾을 수 없습니다.");
         }
 
-        Folder folder = folderRepository.findByIdAndUser(folderId, user).orElse(null);
+        Folder folder = folderRepository.findByIdAndOwner(folderId, user).orElse(null);
         if(folder == null) {
             return Result.FAILURE("폴더를 찾을 수 없습니다.");
         }

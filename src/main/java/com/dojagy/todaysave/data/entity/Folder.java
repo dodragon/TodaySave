@@ -35,15 +35,19 @@ public class Folder {
     @Comment("상위 폴더 고유 ID")
     private Folder parent;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @Comment("소유 회원 고유 식별 ID")
-    private User user;
+    @JoinColumn(name = "owner_id")
+    @Comment("소유자 회원 고유 식별 ID")
+    private User owner;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Folder> children = new ArrayList<>();
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Content> contents = new ArrayList<>();
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @Comment("이 폴더의 공유 관계 목록")
+    private List<FolderShare> shares = new ArrayList<>();
     @Formula("(SELECT MAX(c.create_dt) FROM content c WHERE c.folder_id = folder_id)")
     private LocalDateTime lastContentDate;
     @CreatedDate

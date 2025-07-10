@@ -13,6 +13,8 @@ public class FolderResponseDto {
     private String folderName;
     private String color;
     private Long parentId;
+    private Long ownerId;
     private List<FolderResponseDto> children;
     private LocalDateTime lastContentDate;
+    private List<FolderShareResponseDto> shares; // 공유 정보 목록 (추가)
 }
