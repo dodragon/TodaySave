@@ -38,6 +38,10 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
     implementation("org.jsoup:jsoup:1.17.2")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.seleniumhq.selenium:selenium-java:4.11.0")
+    implementation("io.github.bonigarcia:webdrivermanager:5.6.3")
+    implementation("org.apache.commons:commons-compress:1.26.2")
 
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
