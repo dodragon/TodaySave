@@ -133,9 +133,9 @@ public class UrlMetadataExtractor {
         }
 
         try {
-            Document doc = Jsoup.parse(seleniumResult.getHtmlSource(), seleniumResult.getFinalUrl());
+            Document doc = Jsoup.parse(seleniumResult.htmlSource(), seleniumResult.finalUrl());
 
-            String uniqueKeyUrl = extractAndValidateCanonicalUrl(doc, seleniumResult.getFinalUrl());
+            String uniqueKeyUrl = extractAndValidateCanonicalUrl(doc, seleniumResult.finalUrl());
 
             return Optional.of(
                     UrlMetadataDto.builder()
@@ -143,9 +143,9 @@ public class UrlMetadataExtractor {
                             .title(extractTitle(doc))
                             .description(extractMetaTag(doc, "description"))
                             .thumbnailUrl(extractThumbnailUrl(doc))
-                            .faviconUrl(extractBestIconUrl(doc, seleniumResult.getFinalUrl()))
+                            .faviconUrl(extractBestIconUrl(doc, seleniumResult.finalUrl()))
                             .canonicalUrl(uniqueKeyUrl)
-                            .linkType(extractLinkType(seleniumResult.getFinalUrl()))
+                            .linkType(extractLinkType(seleniumResult.finalUrl()))
                             .build()
             );
         } catch (URISyntaxException e) {
@@ -344,15 +344,8 @@ public class UrlMetadataExtractor {
         return content;
     }
 
-    @Getter
-    private static class SeleniumResult {
-        private final String finalUrl;
-        private final String htmlSource;
-
-        public SeleniumResult(String finalUrl, String htmlSource) {
-            this.finalUrl = finalUrl;
-            this.htmlSource = htmlSource;
-        }
-
-    }
+    public record SeleniumResult(
+            String finalUrl,
+            String htmlSource
+    ){}
 }
